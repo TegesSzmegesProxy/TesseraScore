@@ -1,0 +1,48 @@
+{
+  "name": "@tessera/proxy",
+  "version": "1.0.0",
+  "description": "Proxy backend",
+  "homepage": "https://github.com/TegesSzmegesProxy/backend#readme",
+  "bugs": {
+    "url": "https://github.com/TegesSzmegesProxy/backend/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TegesSzmegesProxy/backend.git"
+  },
+  "license": "MIT",
+  "author": "TSP",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "dev": "nodemon --exec tsx ./source/bootstrap.ts",
+    "analyze:mock": "tsx ./scripts/environment-mock.ts",
+    "eval:jev": "tsx --env-file=.env ./scripts/jev-eval.ts",
+    "mock:upstream": "tsx ./scripts/mock-upstream.ts",
+    "tools:registry": "tsx ./scripts/generate-tool-registry.ts",
+    "bench": "vitest bench --run"
+  },
+  "dependencies": {
+    "@eslint/js": "^9.39.5",
+    "@fastify/http-proxy": "^11.6.3",
+    "@fastify/reply-from": "^12.6.5",
+    "@toon-format/toon": "^4.1.1",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@typesafe-ai/sdk": "^0.6.0",
+    "eslint-config-prettier": "^10.1.8",
+    "fast-xml-parser": "^5.11.2",
+    "fastify": "^5.12.5",
+    "jsonwebtoken": "^9.0.3",
+    "redis": "^6.3.0",
+    "typescript-eslint": "^8.71.0",
+    "vitest": "^5.0.3",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.4",
+    "nodemon": "^1.14.10",
+    "tsx": "^4.23.15"
+  }
+}

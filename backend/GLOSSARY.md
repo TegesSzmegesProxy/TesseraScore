@@ -1,0 +1,32 @@
+# Tessera Glossary
+
+- **Tenant**: one protected application and its configuration, policies, and state. All data is tenant-scoped.
+- **Proxy (Edge)**: the component that receives client traffic and forwards allowed requests to the upstream application.
+- **Upstream**: the protected application server behind Tessera.
+- **Normalized request**: the canonical, parsed form of a raw request used by analysis.
+- **Tool**: a deterministic check (schema, resource, injection, url, file-magic) that produces a tool result.
+- **Tool contract**: a tool's id, metadata and configuration schema, shared by the proxy and the control plane. A policy configures a tool only through its contract.
+- **Tool registry**: the versioned set of tool contracts the proxy executes (`tessera.tools/v3`), published as `docs/tool-registry.json`.
+- **Static verdict**: the aggregated result of all tools: `SAFE`, `SUSPICIOUS`, `POLICY_VIOLATION`, or `ERROR`.
+- **Sampling (N)**: the percentage of `SAFE` requests sent to JEV.
+- **Threshold (T)**: the tenant-set threshold applied to the JEV attack probability, with a floor (`T_floor`) it may tighten to under attack. Independent of N.
+- **Threshold controller**: turns the tenant's threshold into the effective threshold (tightened toward the floor under attack unless locked) and classifies a JEV attack probability as `ATTACK` (strictly above) or `BENIGN`. Its result decides the request and is the only JEV signal behind the attack rate.
+- **JEV**: the external classification model that scores a request on a rubric of levels. Not a conversational LLM.
+- **Attack probability**: JEV's P(yes) to "is this request an attack attempt?" (`JEV_ATTACK_QUESTION`). It alone decides enforcement; severity `score` and `confidence` (`|2p-1|`) are informational.
+- **Pattern match**: a static tool hit passed to JEV as a hint, attributed to the field it matched. Not a finding.
+- **Decision**: the final `ALLOW` or `BLOCK`, recorded with the policy version.
+- **Policy**: the human-readable and structured rules for one tenant, versioned and immutable once written.
+- **Active policy**: the policy version a tenant currently runs on.
+- **Attack rate**: the share of JEV-classified requests classified as `ATTACK`, tracked per tenant and per endpoint.
+- **EWMA**: the exponentially weighted moving average used to smooth attack-rate observations.
+- **Failure behavior**: the tenant-configured behavior when Tessera, static analysis, or JEV fails.
+- **Control plane**: the deployable hosted by us: dashboard/admin API, organizations, tenants, API keys, analysis, policy generation, compilation, approval, activation and bundle distribution.
+- **Proxy (data plane)**: the deployable on the client's server that enforces policy. It never depends on the control plane in the request path.
+- **Collector**: the client-side CI step or CLI that checks out source, redacts secrets, runs environment tools and uploads analysis context.
+- **Organization**: a customer of the hosted control plane; owns one or more tenants.
+- **Deployment key**: the API key a proxy uses to pull bundles for the tenants it is bound to.
+- **Active bundle**: the signed, versioned unit the dashboard distributes: tenant runtime config plus compiled policy.
+- **Policy scope**: where a step of a `tessera.policy/v3` bundle runs: `global` and `environment` on every request, an endpoint on its own requests. The most specific scope wins for the same tool and target.
+- **Policy fetch**: `tessera fetch`, the only way the proxy obtains a bundle: pull, verify, build every tool, store in Redis.
+- **Last known good**: the most recent bundle `tessera fetch` verified and stored in Redis; the proxy runs it when the control plane is unreachable, and a failed fetch never replaces it.
+- **Saga**: a choreographed control-plane workflow across modules, driven by events.
